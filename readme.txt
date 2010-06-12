@@ -13,10 +13,10 @@ A simple way to change a post type in WordPress.
 
 Any combination is possible, even custom post types.
 
-Page to Post
-Post to Page
-Page to Attachment
-Post to Custom
+* Page to Post
+* Post to Page
+* Post to Custom
+* Post to revision/attachment/navigation menu is possible but turned off by default
 
 == Changelog ==
 
