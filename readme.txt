@@ -3,7 +3,7 @@ Contributors: johnjamesjacoby
 Tags: post type
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 0.1
+Stable tag: 0.2
 
 A simple way to change a post type in WordPress.
 
@@ -19,6 +19,9 @@ Page to Attachment
 Post to Custom
 
 == Changelog ==
+
+= Version 0.2 =
+* Disallow post types that are not public and do not have a visible UI
 
 = Version 0.1 =
 * Release

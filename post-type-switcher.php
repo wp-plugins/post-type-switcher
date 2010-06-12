@@ -4,7 +4,7 @@ Plugin Name: Post Type Switcher
 Plugin URI: http://wordpress.org
 Description: Allow switching of post_type in post publish area
 Author: John James Jacoby
-Version: 0.1
+Version: 0.2
 Author URI: http://johnjamesjacoby.com
 */
 
@@ -18,9 +18,21 @@ Author URI: http://johnjamesjacoby.com
 function pts_metabox() {
 	global $post;
 
-	$post_types =				get_post_types();
+	// Disallows things like attachments, revisions, etc...
+	$safe_filter =				array( 'public' => true, 'show_ui' => true );
+
+	// Allow to be filtered, just incase you really need to switch between
+	// those crazy types of posts
+	$args =						apply_filters( 'pts_metabox', $safe_filter );
+
+	// Get the post types based on the above arguments
+	$post_types =				get_post_types( (array)$args );
+
+	// Populate necessary post_type values
 	$cur_post_type =			$post->post_type;
 	$cur_post_type_object =		get_post_type_object( $cur_post_type );
+
+	// Make sure the currently logged in user has the power
 	$can_publish =				current_user_can( $cur_post_type_object->cap->publish_posts );
 ?>
 
