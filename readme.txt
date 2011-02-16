@@ -20,6 +20,10 @@ Post to Custom
 
 == Changelog ==
 
+= Version 0.3 =
+* Use the API to change the post type, fixing a conflict with persistent object caches
+* No longer requires JavaScript
+
 = Version 0.2 =
 * Disallow post types that are not public and do not have a visible UI
 
