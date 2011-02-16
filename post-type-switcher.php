@@ -37,7 +37,7 @@ function pts_metabox() {
 	$cur_post_type_object =	get_post_type_object( $cur_post_type );
 
 	// Make sure the currently logged in user has the power
-	$can_publish = current_user_can( $cur_post_type_object->cap->publish_posts );
+	$can_publish          = current_user_can( $cur_post_type_object->cap->publish_posts );
 ?>
 
 <div class="misc-pub-section misc-pub-section-last post-type-switcher">
@@ -47,7 +47,9 @@ function pts_metabox() {
 <?php if ( !empty( $can_publish ) ) : ?>
 
 	<a href="#" id="edit-post-type-switcher" class="hide-if-no-js"><?php _e( 'Edit' ); ?></a>
+
 	<?php wp_nonce_field( 'post-type-selector', 'pts-nonce-select' ); ?>
+
 	<div id="post-type-select">
 		<select name="pts_post_type" id="pts_post_type">
 
