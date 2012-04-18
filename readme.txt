@@ -9,8 +9,6 @@ A simple way to change a post type in WordPress.
 
 == Description ==
 
-A simple way to change a post type in WordPress.
-
 Any combination is possible, even custom post types:
 
 * Page to Post
