@@ -13,7 +13,7 @@
  * Plugin Name: Post Type Switcher
  * Plugin URI:  http://wordpress.org/extend/post-type-switcher/
  * Description: Allow switching of a post type while editing a post (in post publish section)
- * Version:     1.1
+ * Version:     1.1.1
  * Author:      johnjamesjacoby
  * Author URI:  http://johnjamesjacoby.com
  */
@@ -38,9 +38,9 @@ final class Post_Type_Switcher {
 		if ( ! $this->is_allowed_page() )
 			return;
 
-		add_action( 'post_submitbox_misc_actions', array( $this, 'metabox'    )        );
-		add_action( 'save_post',                   array( $this, 'save_post'  ), 10, 2 );
-		add_action( 'admin_head',                  array( $this, 'admin_head' )        );
+		add_action( 'post_submitbox_misc_actions', array( $this, 'metabox'    )         );
+		add_action( 'save_post',                   array( $this, 'save_post'  ), 999, 2 ); // Late priority for plugin friendliness
+		add_action( 'admin_head',                  array( $this, 'admin_head' )         );
 	}
 
 	/**
@@ -58,16 +58,16 @@ final class Post_Type_Switcher {
 			'public'  => true,
 			'show_ui' => true
 		) );
-		$post_types  = get_post_types( $args, 'objects' );
-		$cpt_object  = get_post_type_object( get_post_type() );
+		$post_types = get_post_types( $args, 'objects' );
+		$cpt_object = get_post_type_object( get_post_type() );
 
-		// Bail if object is dirty
+		// Bail if object does not exist or produces an error
 		if ( empty( $cpt_object ) || is_wp_error( $cpt_object ) )
 			return; ?>
 
 		<div class="misc-pub-section misc-pub-section-last post-type-switcher">
 			<label for="pts_post_type"><?php _e( 'Post Type:' ); ?></label>
-			<span id="post-type-display"><?php echo $cpt_object->labels->singular_name; ?></span>
+			<span id="post-type-display"><?php echo esc_html( $cpt_object->labels->singular_name ); ?></span>
 
 			<?php if ( current_user_can( $cpt_object->cap->publish_posts ) ) : ?>
 
@@ -78,12 +78,13 @@ final class Post_Type_Switcher {
 				<div id="post-type-select">
 					<select name="pts_post_type" id="pts_post_type">
 
-					<?php foreach ( $post_types as $post_type => $pt ) :
-						if ( ! current_user_can( $pt->cap->publish_posts ) )
-							continue;
+						<?php foreach ( $post_types as $post_type => $pt ) : ?>
 
-						echo '<option value="' . esc_attr( $pt->name ) . '"' . selected( get_post_type(), $post_type, false ) . '>' . $pt->labels->singular_name . "</option>\n";
-					endforeach; ?>
+							<?php if ( ! current_user_can( $pt->cap->publish_posts ) ) continue; ?>
+
+							<option value="<?php echo esc_attr( $pt->name ); ?>" <?php selected( get_post_type(), $post_type ); ?>><?php echo esc_html( $pt->labels->singular_name ); ?></option>
+
+						<?php endforeach; ?>
 
 					</select>
 					<a href="#" id="save-post-type-switcher" class="hide-if-no-js button"><?php _e( 'OK' ); ?></a>
@@ -99,6 +100,17 @@ final class Post_Type_Switcher {
 	
 	/**
 	 * Set the post type on save_post but only when editing
+	 *
+	 * We do a bunch of sanity checks here, to make sure we're only changing the
+	 * post type when the user explicitly intends to.
+	 * 
+	 * - Not during autosave
+	 * - Check nonce
+	 * - Check user capabilities
+	 * - Check $_POST input name
+	 * - Check if revision or current post-type
+	 * - Check new post-type exists
+	 * - Check that user can publish posts of new type
 	 *
 	 * @since PostTypeSwitcher (0.3)
 	 * @param int $post_id
@@ -122,16 +134,13 @@ final class Post_Type_Switcher {
 		if ( empty( $_POST['pts_post_type'] ) )
 			return;
 
-		if ( $_POST['pts_post_type'] == $post->post_type )
+		if ( in_array( $post->post_type, array( $_POST['pts_post_type'], 'revision' ) ) )
 			return;
 
 		if ( ! $new_post_type_object = get_post_type_object( $_POST['pts_post_type'] ) )
 			return;		
 
 		if ( ! current_user_can( $new_post_type_object->cap->publish_posts ) )
-			return;
-
-		if ( 'revision' == $post->post_type )
 			return;
 
 		set_post_type( $post_id, $new_post_type_object->name );
@@ -192,6 +201,11 @@ final class Post_Type_Switcher {
 	private static function is_allowed_page() {
 		global $pagenow;
 
+		// Only for admin area
+		if ( ! is_admin() )
+			return false;
+
+		// Allowed admin pages
 		$pages = apply_filters( 'pts_allowed_pages', array(
 			'post.php'
 		) );
@@ -201,5 +215,3 @@ final class Post_Type_Switcher {
 	}
 }
 new Post_Type_Switcher();
-
-?>
