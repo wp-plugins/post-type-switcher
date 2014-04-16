@@ -2,7 +2,7 @@
 Contributors: johnjamesjacoby, beatpanda
 Tags: post type
 Requires at least: 3.0
-Tested up to: 3.5
+Tested up to: 3.9
 Stable tag: 1.2
 
 A simple way to change a post's type in WordPress
