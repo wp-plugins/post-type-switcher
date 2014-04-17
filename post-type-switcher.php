@@ -282,6 +282,22 @@ final class Post_Type_Switcher {
 			#post-type-display {
 				font-weight: bold;
 			}
+			
+			#post-body .post-type-switcher::before {
+				content: '\f109';
+				font: 400 20px/1 dashicons;
+				speak: none;
+				display: inline-block;
+				padding: 0 2px 0 0;
+				top: 0;
+				left: -1px;
+				position: relative;
+				vertical-align: top;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				text-decoration: none !important;
+				color: #888;
+			}
 		</style>
 
 	<?php
