@@ -20,6 +20,10 @@ Note: Invisible post types (revisions, menus, etc...) are purposely excluded. Fi
 
 Now with bulk editing, thanks to Matthew Gerring!
 
+Video from 1wd.tv:
+
+http://youtu.be/kmfjw8ZyDnc
+
 == Changelog ==
 
 = Version 1.4 =
