@@ -47,7 +47,7 @@ final class Post_Type_Switcher {
 		add_action( 'post_submitbox_misc_actions', array( $this, 'metabox'          )         );
 		add_action( 'quick_edit_custom_box',       array( $this, 'quickedit'        ), 10,  2 );
 		add_action( 'bulk_edit_custom_box',        array( $this, 'quickedit'        ), 10,  2 );
-		add_action(	'admin_enqueue_scripts',       array( $this, 'quickedit_script' ), 10,  1 );
+		add_action( 'admin_enqueue_scripts',       array( $this, 'quickedit_script' ), 10,  1 );
 		add_action( 'save_post',                   array( $this, 'save_post'        ), 999, 2 ); // Late priority for plugin friendliness
 		add_action( 'admin_head',                  array( $this, 'admin_head'       )         );
 	}
@@ -148,7 +148,12 @@ final class Post_Type_Switcher {
 	 * @since PostTypeSwitcher (1.2)
 	 */
 	public function quickedit( $column_name, $post_type ) {
-	?>
+
+		// Bail to prevent multiple drop-downs
+		if ( 'post_type' !== $column_name ) {
+			return;
+		} ?>
+
 		<fieldset class="inline-edit-col-right">
 			<div class="inline-edit-col">
 				<label class="alignleft">
